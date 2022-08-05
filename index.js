@@ -1,13 +1,13 @@
 const Discord = require("discord.js");
 require("dotenv").config();
 
-const token  = "MTAwMzUzNTcyNjY0Nzk3NjAzNg.GQuIRh.l_lRg8pQ5S2TrUbJTxLEGi8puk7iKfg55KiH6w"
-
+const generateImage = require("./generateImage")
 
 const client = new Discord.Client({ 
     intents: [
         "GUILDS",
-        "GUILD_MESSAGES"
+        "GUILD_MESSAGES",
+        "GUILD_MEMBERS",
     ]
 })
 
@@ -20,5 +20,18 @@ client.on("messageCreate", (message) => {
         message.reply("```Hello World!```")
     }
 })
+
+const welcomeChannelId = "968315519163858974"
+
+
+client.on("guildMemberAdd", async (member) => {
+    const img = await generateImage(member)
+    member.guild.channels.cache.get(welcomeChannelId).send({
+        content: ` **Welcome <@${member.id}> to W:RP!** You're one paw away from starting your new journey! Please react to the message in <#968320499585261599> to see the rest of the server and follow the guide in <#1003220784124264528> to begin your adventure!`,
+        files: [img]
+    })
+
+})
+
 
 client.login(process.env.token);
